@@ -1,0 +1,47 @@
+{
+    "project_info": {
+      "project_number": "140662796956",
+      "project_id": "edovation-380712",
+      "storage_bucket": "edovation-380712.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:140662796956:android:463ddeb2803e4f892db359",
+          "android_client_info": {
+            "package_name": "com.edovation.androidapp.edovation"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "140662796956-0gbm5vk7f0rvumseuvisvh2d1tggs9u7.apps.googleusercontent.com",
+            "client_type": 1,
+            "android_info": {
+              "package_name": "com.edovation.androidapp.edovation",
+              "certificate_hash": "a8439a0a4cebb054621ccb685a9dec6af3bbb792"
+            }
+          },
+          {
+            "client_id": "140662796956-8j1q8tategas7tucc5floggtnv1qet2l.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyCNzT7ELwZM-TFIpLnilopUfZzB678zags"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "140662796956-8j1q8tategas7tucc5floggtnv1qet2l.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
