@@ -1,8 +1,14 @@
+import 'package:edovation/bottom_bar_screens_user/donation_requests_user.dart';
 import 'package:edovation/bottom_bar_screens_user/home_screen.dart';
+import 'package:edovation/bottom_bar_screens_user/request_appointment.dart';
+import 'package:edovation/bottom_bar_screens_user/profile_user.dart';
+import 'package:edovation/bottom_bar_screens_user/stats_user.dart';
 import 'package:edovation/bottom_nav_bar_user/common_app_bar_user.dart';
 import 'package:edovation/bottom_nav_bar_user/common_app_drawer_user.dart';
+import 'package:edovation/controllers/bottom_bar_user_controller.dart';
 import 'package:edovation/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -15,21 +21,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     HomeScreenUser(),
-    Text(
-      'Likes',
-      style: optionStyle,
-    ),
-    Text(
-      'Search',
-      style: optionStyle,
-    ),
-    Text(
-      'Profile',
-      style: optionStyle,
-    ),
+    DonationScreenUser(),
+    StatsScreenUser(),
+    SProfile()
   ];
+
+  @override
+  void initState() {
+    Get.put(BottomBarUserController());
+    // TODO: implement initState
+    super.initState();
+  }
 
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
@@ -72,8 +76,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   text: 'Home',
                 ),
                 GButton(
-                  icon: LineIcons.donate,
-                  text: 'Donation',
+                  icon: LineIcons.book,
+                  text: 'Books',
                 ),
                 GButton(
                   icon: LineIcons.horizontalSliders,

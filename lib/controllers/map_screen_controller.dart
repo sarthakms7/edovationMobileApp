@@ -10,29 +10,33 @@ class MapScreenController extends GetxController {
     markerId: MarkerId('origin'),
   ).obs;
   Rx<Marker> destination = const Marker(
-    markerId: MarkerId('origin'),
+    markerId: MarkerId('destination'),
   ).obs;
   Rx<Directions> info = Directions().obs;
+
+  void initializeMap(double lat, double lng) async {
+    origin.value = Marker(
+      markerId: const MarkerId('origin'),
+      infoWindow: const InfoWindow(title: 'Destination'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      position: LatLng(25.455020282300993, 81.83196859924433),
+    );
+    destination.value = Marker(
+      markerId: const MarkerId('destination'),
+      infoWindow: const InfoWindow(title: 'Destination'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      position: LatLng(lat, lng),
+    );
+    final directions = await DirectionsRepository().getDirections(
+        origin: LatLng(25.455020282300993, 81.83196859924433),
+        destination: LatLng(25.455020282300993, 81.83196859924433));
+    info.value = directions!;
+  }
 
   @override
   void onInit() async {
     // TODO: implement onInit
-    origin.value = Marker(
-      markerId: const MarkerId('origin'),
-      infoWindow: const InfoWindow(title: 'Origin'),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      position: LatLng(37.773972, -122.431297),
-    );
-    destination.value = Marker(
-      markerId: const MarkerId('origin'),
-      infoWindow: const InfoWindow(title: 'Origin'),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      position: LatLng(45.773972, -122.431297),
-    );
-    final directions = await DirectionsRepository().getDirections(
-        origin: origin.value.position,
-        destination: LatLng(37.773972, -122.431297));
-    info.value = directions!;
+
     super.onInit();
   }
 }

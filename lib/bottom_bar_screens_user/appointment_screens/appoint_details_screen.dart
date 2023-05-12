@@ -1,28 +1,40 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edovation/bottom_bar_screens_user/appointment_screens/maps_files/map_screen.dart';
 import 'package:edovation/bottom_nav_bar_user/common_app_bar_user.dart';
 import 'package:edovation/bottom_nav_bar_user/common_app_drawer_user.dart';
+import 'package:edovation/controllers/map_screen_controller.dart';
 import 'package:edovation/utils/colors.dart';
 import 'package:edovation/utils/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:math' as math;
 import 'package:get/get.dart';
-
-enum _filter { all, submitted, notSubmitted }
+import 'package:qr_flutter/qr_flutter.dart';
 
 class AppointmentDetailsUser extends StatefulWidget {
-  const AppointmentDetailsUser({Key? key}) : super(key: key);
+  DocumentSnapshot snap;
+  AppointmentDetailsUser({Key? key, required this.snap}) : super(key: key);
 
   @override
   _AppointmentDetailsUserState createState() => _AppointmentDetailsUserState();
 }
 
 class _AppointmentDetailsUserState extends State<AppointmentDetailsUser> {
+  late MapScreenController controllerMap;
   bool checkBoxValue1 = false;
-  String? _selected = 'All';
+  String qrData = FirebaseAuth.instance.currentUser!.uid;
 
   GlobalKey<ScaffoldState> _key = GlobalKey();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    controllerMap = Get.put(MapScreenController());
+    controllerMap.initializeMap(widget.snap['lat'], widget.snap['long']);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +57,7 @@ class _AppointmentDetailsUserState extends State<AppointmentDetailsUser> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       customText(
-                          text: 'Venue : Jwala Devi SVM Inter College',
+                          text: 'Venue : ${widget.snap['venue']}',
                           maxLines: 3,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -54,7 +66,25 @@ class _AppointmentDetailsUserState extends State<AppointmentDetailsUser> {
                         height: 20,
                       ),
                       customText(
-                        text: 'Topic : Jwala Devi SVM Inter College',
+                        text: 'Topic : ${widget.snap['topic']}',
+                        maxLines: 3,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      customText(
+                        text: 'Time : ${widget.snap['time']}',
+                        maxLines: 3,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      customText(
+                        text: 'Date : ${widget.snap['date']}',
                         maxLines: 3,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -77,6 +107,36 @@ class _AppointmentDetailsUserState extends State<AppointmentDetailsUser> {
                             style: ElevatedButton.styleFrom(
                                 primary: "02075D".toColor()),
                           )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      customText(
+                        text: 'QR Code',
+                        maxLines: 3,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              QrImage(
+                                data: widget.snap['qr_code'].toString(),
+                                size: (math.min(
+                                        MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.height)) /
+                                    1.2,
+                                backgroundColor: Colors.white,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 30),
                         ],
                       ),
                     ],

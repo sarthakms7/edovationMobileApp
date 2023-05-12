@@ -1,3 +1,8 @@
+import 'package:edovation/authentication/login_screen.dart';
+import 'package:edovation/bottom_bar_screens_user/request_appointment.dart';
+import 'package:edovation/bottom_bar_screens_user/request_donation.dart';
+import 'package:edovation/bottom_nav_bar_user/bottom_nav_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,19 +45,40 @@ Drawer buildDrawerUser(
                           ),
                         )
                       ]),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 10.0, top: 30),
+                  //   child: InkWell(
+                  //     // onTap: () {
+                  //     //   Navigator.of(context).push(MaterialPageRoute(
+                  //     //       builder: (_) => BottomNavBar()));
+                  //     // },
+                  //     child: Row(
+                  //       children: [
+                  //         const Icon(
+                  //           Icons.account_circle_outlined,
+                  //           color: white,
+                  //           size: 18,
+                  //         ),
+                  //         const SizedBox(
+                  //           width: 18,
+                  //         ),
+                  //         customText(
+                  //             text: 'Profile',
+                  //             textColor: white,
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.w700)
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0, top: 30),
-                    child: InkWell(
-                      // onTap: () {
-                      //   Navigator.of(context).push(MaterialPageRoute(
-                      //       builder: (_) => SDashboardNavigation(
-                      //             selectedIndex: 3,
-                      //           )));
-                      // },
+                    child: GestureDetector(
+                      onTap: () => Get.to(() => RequestAppointmentScreen()),
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.account_circle_outlined,
+                            Icons.info_outline,
                             color: white,
                             size: 18,
                           ),
@@ -60,7 +86,7 @@ Drawer buildDrawerUser(
                             width: 18,
                           ),
                           customText(
-                              text: 'Profile',
+                              text: 'Request Appointment',
                               textColor: white,
                               fontSize: 18,
                               fontWeight: FontWeight.w700)
@@ -70,22 +96,25 @@ Drawer buildDrawerUser(
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0, top: 30),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline,
-                          color: white,
-                          size: 18,
-                        ),
-                        const SizedBox(
-                          width: 18,
-                        ),
-                        customText(
-                            text: 'About us',
-                            textColor: white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700)
-                      ],
+                    child: GestureDetector(
+                      onTap: () => Get.to(() => RequestDonationScreen()),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            color: white,
+                            size: 18,
+                          ),
+                          const SizedBox(
+                            width: 18,
+                          ),
+                          customText(
+                              text: 'Request Donation',
+                              textColor: white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700)
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -131,8 +160,8 @@ Drawer buildDrawerUser(
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0, top: 30),
                     child: InkWell(
-                      onTap: () => launchUrl(
-                          Uri.parse("https://www.praccel.com/privacy-policy/")),
+                      // onTap: () => launchUrl(
+                      //     Uri.parse("https://www.praccel.com/privacy-policy/")),
                       child: Row(
                         children: [
                           const Icon(
@@ -156,18 +185,17 @@ Drawer buildDrawerUser(
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0, top: 30),
                     child: InkWell(
-                      onTap: () {
-                        Get.back();
+                      onTap: () async {
+                        await FirebaseAuth.instance.signOut();
+                        Get.to(() => LoginScreen());
                         //buildLogoutDialog(context);
                       },
                       child: Row(
                         children: [
-                          // SvgPicture.asset(
-                          //   logout,
-                          //   color: lightBlack,
-                          //   width: 18,
-                          //   height: 18,
-                          // ),
+                          const Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                          ),
                           const SizedBox(
                             width: 18,
                           ),

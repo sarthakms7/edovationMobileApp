@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../utils/colors.dart';
 import '../utils/custom_text.dart';
@@ -9,7 +10,7 @@ AppBar buildAppBarUser(
     automaticallyImplyLeading: false,
     leading: InkWell(
       onTap: () {
-        selectedIndex == 0 ? key.currentState?.openDrawer() : Container();
+        selectedIndex == 0 ? key.currentState?.openDrawer() : Get.back();
         // : Navigator.of(context).pushReplacement(MaterialPageRoute(
         //     builder: (_) => SDashboardNavigation(
         //           selectedIndex: 0,
@@ -57,15 +58,18 @@ AppBar buildAppBarUser(
               text: 'Edovation',
               textColor: white,
               fontWeight: FontWeight.bold,
-              fontSize: 16)
+              fontSize: 16),
+          const SizedBox(
+            width: 30,
+          )
         ],
       ),
     ),
-    actions: [
-      Icon(Icons.notifications_active),
-      const SizedBox(
-        width: 24,
-      )
-    ],
+    // actions: [
+    //   Icon(Icons.notifications_active),
+    //   const SizedBox(
+    //     width: 24,
+    //   )
+    // ],
   );
 }

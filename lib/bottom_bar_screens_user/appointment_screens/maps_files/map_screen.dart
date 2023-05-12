@@ -15,17 +15,17 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  var controller;
+  late MapScreenController controller;
   static const _initialCameraPosition = CameraPosition(
-    target: LatLng(37.773972, -122.431297),
-    zoom: 11.5,
+    target: LatLng(25.455020282300993, 81.83196859924433),
+    zoom: 16.5,
   );
 
   late GoogleMapController _googleMapController;
 
   @override
   void initState() {
-    controller = Get.put(MapScreenController());
+    controller = Get.find();
     // TODO: implement initState
     super.initState();
   }
@@ -45,30 +45,13 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text('Location'),
         backgroundColor: "02075D".toColor(),
         actions: [
-          if (controller.origin.value != null)
-            TextButton(
-              onPressed: () => _googleMapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: controller.origin.value.position,
-                    zoom: 14.5,
-                    tilt: 50.0,
-                  ),
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.green,
-                textStyle: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              child: const Text('ORIGIN'),
-            ),
           if (controller.destination.value != null)
             TextButton(
               onPressed: () => _googleMapController.animateCamera(
                 CameraUpdate.newCameraPosition(
                   CameraPosition(
                     target: controller.destination.value.position,
-                    zoom: 14.5,
+                    zoom: 16.5,
                     tilt: 50.0,
                   ),
                 ),
@@ -108,34 +91,34 @@ class _MapScreenState extends State<MapScreen> {
             // },
             // onLongPress: () => _addMarker(),
           ),
-          if (controller.info.value != null)
-            Positioned(
-              top: 20.0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 6.0,
-                  horizontal: 12.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.yellowAccent,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0, 2),
-                      blurRadius: 6.0,
-                    )
-                  ],
-                ),
-                child: Text(
-                  '${controller.info.value.totalDistance}, ${controller.info.value.totalDuration}',
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+          // if (controller.info.value != null)
+          //   Positioned(
+          //     top: 20.0,
+          //     child: Container(
+          //       padding: const EdgeInsets.symmetric(
+          //         vertical: 6.0,
+          //         horizontal: 12.0,
+          //       ),
+          //       decoration: BoxDecoration(
+          //         color: Colors.yellowAccent,
+          //         borderRadius: BorderRadius.circular(20.0),
+          //         boxShadow: const [
+          //           BoxShadow(
+          //             color: Colors.black26,
+          //             offset: Offset(0, 2),
+          //             blurRadius: 6.0,
+          //           )
+          //         ],
+          //       ),
+          //       child: Text(
+          //         '${controller.info.value.totalDistance}, ${controller.info.value.totalDuration}',
+          //         style: const TextStyle(
+          //           fontSize: 18.0,
+          //           fontWeight: FontWeight.w600,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -146,8 +129,10 @@ class _MapScreenState extends State<MapScreen> {
               ? CameraUpdate.newLatLngBounds(
                   controller.info.value.bounds ??
                       LatLngBounds(
-                          southwest: LatLng(23.23, 23.45),
-                          northeast: LatLng(23.23, 23.45)),
+                          southwest:
+                              LatLng(25.455020282300993, 81.83196859924433),
+                          northeast:
+                              LatLng(25.455020282300993, 81.83196859924433)),
                   100.0)
               : CameraUpdate.newCameraPosition(_initialCameraPosition),
         ),

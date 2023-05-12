@@ -1,8 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:edovation/authentication/authentication.dart';
+import 'package:edovation/authentication/login_screen_school.dart';
+import 'package:edovation/authentication/sign_up_screen.dart';
 import 'package:edovation/bottom_nav_bar_user/bottom_nav_bar.dart';
 import 'package:edovation/utils/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/login_controller.dart';
@@ -26,6 +32,25 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final forgotPasswordController = TextEditingController();
+
+  @override
+  void initState() {
+    //getLoginData();
+    super.initState();
+  }
+
+  // void getLoginData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? schoolId = prefs.getString('school_id_edovation');
+  //   QuerySnapshot<Map<String, dynamic>> snap = await FirebaseFirestore.instance
+  //       .collection('schools')
+  //       .where('school_id', isEqualTo: schoolId)
+  //       .get();
+  //   if (snap.docs.isNotEmpty) {
+  //     Get.to(() => BottomAppBar());
+  //   }
+  // }
 
   Future<void> forgotPasswordDialog(BuildContext context) async {
     await showDialog(
@@ -45,22 +70,69 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 5,
                 ),
-                customText(
-                    text: 'Contact your English teacher or Praccel official.',
-                    maxLines: 2),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                      key: const ValueKey('forgotusername'),
+                      controller: forgotPasswordController,
+                      autofillHints: [AutofillHints.givenName],
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return ("Please enter valid email");
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        usernameController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(7.0)),
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        hintText: 'Email Address',
+                        hintStyle:
+                            const TextStyle(color: Colors.grey, fontSize: 15),
+                        filled: true,
+                        fillColor: Color.fromARGB(255, 220, 227, 248),
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                          borderSide:
+                              BorderSide(color: Color(0xffF4F7FF), width: 2),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                      )),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    try {
+                      if (forgotPasswordController.text == '') {
+                        Get.snackbar(
+                            "Enter Valid Email", 'Please enter valid email',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white);
+                      } else {
+                        await FirebaseAuth.instance.sendPasswordResetEmail(
+                            email: forgotPasswordController.text.trim());
+                      }
+                    } catch (e) {
+                      Get.snackbar("Some Error Occured", e.toString(),
+                          backgroundColor: Colors.red, colorText: Colors.white);
+                    }
+
                     Get.back();
+                    forgotPasswordController.clear();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: "02075D".toColor(),
                     onPrimary: Colors.white,
                     minimumSize: const Size.fromHeight(36),
                   ),
-                  child: customText(text: 'OK', textColor: white),
+                  child: customText(text: 'Send Reset Link', textColor: white),
                 )
               ]),
             ));
@@ -94,20 +166,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: deviceHeight * 0.07,
+                      height: deviceHeight * 0.035,
                     ),
-                    SizedBox(
-                      height: deviceHeight * 0.05,
-                      child: Icon(Icons.login_sharp),
-                    ),
-                    SizedBox(
-                      height: deviceHeight * 0.07,
+                    Center(
+                      child: Image.asset(
+                        'assets/icons/playstore.png',
+                        width: 200,
+                        height: 200,
+                      ),
                     ),
                     customText(
-                      text: 'Hello Eduvator,',
+                      text: 'Hello Edovator,',
                       textColor: black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 24,
                     ),
                     SizedBox(
                       height: deviceHeight * 0.02,
@@ -126,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         autofillHints: [AutofillHints.givenName],
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return ("Please enter valid username");
+                            return ("Please enter valid email");
                           }
                           return null;
                         },
@@ -232,10 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       key: const ValueKey('loginButton'),
                       onTap: () {
                         if (!controller.isLoading.value) {
-                          // _login();
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (_) => BottomNavBar()));
+                          _login();
                         }
                       },
                       child: Container(
@@ -244,27 +313,27 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.horizontal(
                                 right: Radius.circular(10),
                                 left: Radius.circular(10))),
-                        child: controller.isLoading.value
-                            ? CircularProgressIndicator.adaptive()
-                            : Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: deviceWidth * 0.25,
-                                    vertical: deviceHeight * 0.02),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.login,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    customText(
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: deviceWidth * 0.25,
+                                vertical: deviceHeight * 0.02),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.login,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 8),
+                                controller.isLoading.value
+                                    ? CircularProgressIndicator.adaptive()
+                                    : customText(
                                         text: 'Login',
                                         textColor: white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16)
-                                  ],
-                                )),
+                              ],
+                            )),
                       ),
                     ),
                     SizedBox(
@@ -287,53 +356,34 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () => null,
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          text: 'By signing up,you agree to our',
-                          style: TextStyle(
-                              color: Colors.grey, fontFamily: 'Roboto-Medium'),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ' Terms & Conditions ',
-                                style: TextStyle(
-                                    fontFamily: 'Roboto-Medium',
-                                    color: Colors.blue)),
-                          ],
-                        ),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                            onTap: () => Get.to(() => SignupScreen()),
+                            child: customText(
+                                text:
+                                    'Don\'t have an account? Click here to signup.',
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                textColor: Colors.blue))
+                      ],
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 20,
                     ),
-                    InkWell(
-                      onTap: () => null,
-                      child: Center(
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            text: '',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontFamily: 'Roboto-Medium'),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: 'and ',
-                                  style: TextStyle(
-                                      fontFamily: 'Roboto-Medium',
-                                      color: Colors.grey)),
-                              TextSpan(
-                                  text: 'Privacy Policy',
-                                  style: TextStyle(
-                                      fontFamily: 'Roboto-Medium',
-                                      color: Colors.blue)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                            onTap: () => Get.to(() => LoginScreenSchool()),
+                            child: customText(
+                                text: 'Login as School',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                textColor: Colors.blue))
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -363,12 +413,32 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() async {
     try {
       controller.isLoading.value = true;
+
       if (_formKey.currentState!.validate()) {
         _formKey.currentState?.save();
+        final credential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: usernameController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+        Get.to(() => BottomNavBar());
       }
       controller.isLoading.value = false;
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       controller.isLoading.value = false;
+      if (e.code == 'user-not-found') {
+        Get.snackbar("User Not Found", "No user found for that email.",
+            backgroundColor: Colors.red, colorText: Colors.white);
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        Get.snackbar("Wrong Password", "Wrong password provided for that user.",
+            backgroundColor: Colors.red, colorText: Colors.white);
+        print('Wrong password provided for that user.');
+      }
+    } catch (e) {
+      Get.snackbar(
+          "Some Error Occured", "Some unknown error occured. Please try again.",
+          backgroundColor: Colors.red, colorText: Colors.white);
       print(e);
     }
   }

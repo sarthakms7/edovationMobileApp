@@ -1,5 +1,60 @@
 import 'package:flutter/material.dart';
 
+import 'colors.dart';
+
+InputDecoration myInputDecoration({
+  required String hintText,
+  String? labelText,
+  Widget? suffixIcon,
+  String? suffixText,
+}) {
+  return InputDecoration(
+    hintText: hintText,
+    labelText: labelText,
+    suffixText: suffixText,
+    suffixStyle: TextStyle(color: red),
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: 8,
+      vertical: 8,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        color: "02075D".toColor(),
+      ),
+    ),
+    disabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        width: 2,
+        color: "02075D".toColor(),
+      ),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        width: 2,
+        color: "02075D".toColor(),
+      ),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        width: 2,
+        color: "02075D".toColor(),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        width: 2,
+        color: "02075D".toColor(),
+      ),
+    ),
+    suffixIcon: suffixIcon,
+  );
+}
+
 Widget customText({
   String? text,
   Color? textColor,
